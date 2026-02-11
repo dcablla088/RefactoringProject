@@ -35,32 +35,41 @@ public class App {
     }
 
     private static void imprimirPedido(Pedido pedido) {
-        System.out.println(String.format("Procesando pedido para: %s" , pedido.getCliente().getNombre()));
-        System.out.println(String.format("ID Cliente: %s" + pedido.getCliente().getId()));
-        for (int i = 0; i < pedido.getlistaProductos().size(); i++) {
-        System.out.println(String.format("Item %d : %s - %.2f EUR  " , (i+1) , pedido.getlistaProductos().get(i).getNombre() , + pedido.getlistaProductos()));
+        System.out.println(String.format("Procesando pedido para: %s", pedido.getCliente().getNombre()));
+        System.out.println(String.format("ID Cliente: %s", pedido.getCliente().getId()));
+        
+        for (int i = 0; i < pedido.getListaProductos().size(); i++) {
+            System.out.println(String.format("Item %d: %s - %.2f EUR", 
+                (i + 1), 
+                pedido.getListaProductos().get(i).getNombre(), 
+                pedido.getListaProductos().get(i).getPrecio()));
         }
-        if(pedido.aplicaDescuento()){
-        System.out.println("Aplica descuento por gran volumen (5%)");
+        
+        if (pedido.aplicaDescuento()) {
+            System.out.println("Aplica descuento por gran volumen (5%)");
         }
-        System.out.println(String.format("Total Neto: " + t1));
-        System.out.println(String.format("Total con IVA (%.2f %): %.2f" + (IVA *100) , pedido.aplicarSubtotalConIva()));
-        System.out.println("--------------------------------------------------"));
+        
+        System.out.println(String.format("Total Neto: %.2f", pedido.getTotalNeto()));
+        System.out.println(String.format("Total con IVA (%.0f%%): %.2f", 
+            IVA * 100, 
+            pedido.aplicarSubtotalConIva()));
+        System.out.println("--------------------------------------------------");
     }
-
+    
     private static void generarFicheroPedido(Pedido pedido) {
-     try {
+        String nombreArchivo = "pedido_" + pedido.getCliente().getId() + ".txt";
+        
+        try {
             FileWriter writer = new FileWriter(nombreArchivo);
             writer.write("FACTURA\n");
             writer.write("Cliente: " + pedido.getCliente().getNombre() + "\n");
             writer.write("Direccion: " + pedido.getCliente().getDireccion() + "\n");
-            writer.write(String.format("Total a pagar: %.2f\n", totalConIva));
+            writer.write(String.format("Total a pagar: %.2f\n", pedido.aplicarSubtotalConIva()));
             writer.close();
-            System.out.println("Archivo guardado correctamente.");
+            System.out.println("Archivo guardado correctamente: " + nombreArchivo);
         } catch (IOException e) {
-            System.out.println("An error occurred.");
+            System.out.println("Error al guardar el archivo.");
             e.printStackTrace();
         }
-
     }
 }
